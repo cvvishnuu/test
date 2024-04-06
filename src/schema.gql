@@ -1,0 +1,76 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Customer {
+  Name: String!
+  MobileNumber: String!
+  Email: String!
+}
+
+type DealerLocation {
+  City: String!
+  State: String!
+  Pincode: String!
+  BookingAddress: String!
+  dealerPinCode: String!
+}
+
+type Dealer {
+  DealerCode: String!
+  DealerName: String!
+  BranchCode: String!
+  Location: DealerLocation!
+}
+
+type Vehicle {
+  Name: String!
+  Variant: String!
+  Color: String!
+  ExShowRoomPrice: Float!
+  onRoadPrice: Float!
+  PartID: String!
+  ModelID: String!
+  VehicleType: String!
+}
+
+type PaymentDetail {
+  TransactionID: String!
+  OrderID: String!
+  Amount: Float!
+  PaymentType: String!
+  PaymentStatus: String!
+}
+
+type BTODetails {
+  OrderConfirmedDate: DateTime
+  OrderManufacturedDate: DateTime
+  OrderPackedDate: DateTime
+  OrderDispatchedDate: DateTime
+  CurrentStage: DateTime
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Booking {
+  UUID: String!
+  BookingNumber: Int!
+  BookingSource: String!
+  BookingReceivedDate: DateTime!
+  Dealer: Dealer!
+  Vehicle: Vehicle!
+  PaymentDetails: [PaymentDetail!]!
+  BTODetails: BTODetails!
+}
+
+type BookingResponse {
+  Customer: Customer!
+  Bookings: [Booking!]!
+}
+
+type Query {
+  fetchBookings: BookingResponse!
+}
