@@ -1,0 +1,107 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+// schema.prisma
+
+// Customer table model
+model Customer {
+  ID           Int       @id @default(autoincrement())
+  Name         String    @db.VarChar(30)
+  MobileNumber String    @db.VarChar(10)
+  Email        String    @db.VarChar(20)
+  CreatedOn    DateTime  @default(now())
+  UpdatedOn    DateTime?
+  UpdatedBy    Int?
+  Bookings     Booking[]
+}
+
+// Payment table model
+model Payment {
+  ID            Int      @id @default(autoincrement())
+  OrderID       String   @db.VarChar(30)
+  TransactionID String   @db.VarChar(30)
+  PaymentStatus String   @db.VarChar(20)
+  PaymentType   String   @db.VarChar(20)
+  AmountPaid    Decimal
+  OnlinePayment Boolean
+  CreatedOn     DateTime @default(now())
+  BookingUUID   String   @db.VarChar(20)
+  Booking       Booking  @relation(fields: [BookingUUID], references: [UUID])
+}
+
+// Booking table model
+model Booking {
+  UUID                      String           @id @db.VarChar(20)
+  CustomerID                Int              @db.Int
+  Customer                  Customer         @relation(fields: [CustomerID], references: [ID])
+  Location                  String           @db.VarChar(MAX)
+  HomeDeliverySelected      Boolean
+  DealerCode                Int
+  BranchCode                Int
+  OnlineBooking             Boolean
+  BookingSource             String           @db.VarChar(20)
+  PreBooked                 Boolean
+  MerchandiseAndAccessories String           @db.VarChar(MAX)
+  BookingStatus             String           @db.VarChar(20)
+  FrameNumber               String           @db.VarChar(20)
+  OrderNumber               String           @db.VarChar(20)
+  CreatedOn                 DateTime         @default(now())
+  BookingNumber             Int
+  Payments                  Payment[]
+  Vehicles                  Vehicle[]
+  BookingJournels           BookingJournal[]
+}
+
+// Vehicle table model
+model Vehicle {
+  ID              Int       @id @default(autoincrement())
+  Model           String    @db.VarChar(30)
+  Variant         String    @db.VarChar(30)
+  Color           String    @db.VarChar(20)
+  PartID          String    @db.VarChar(20)
+  ModelID         String    @db.VarChar(20)
+  ExShowRoomPrice Decimal
+  OnRoadPrice     Decimal
+  BTOKit          String    @db.VarChar(20)
+  FavouriteNumber String    @db.VarChar(3)
+  BookingUUID     String    @db.VarChar(20)
+  Booking         Booking   @relation(fields: [BookingUUID], references: [UUID])
+  CreatedOn       DateTime  @default(now())
+  UpdatedOn       DateTime?
+}
+
+model BookingJournal {
+  ID          Int                @id @default(autoincrement())
+  Source      String             @db.VarChar(20)
+  Request     String             @db.VarChar(MAX)
+  Response    String             @db.VarChar(100)
+  Status      Int                @db.Int
+  CreatedOn   DateTime           @default(now()) @db.DateTime
+  BookingUUID String?            @db.VarChar(20)
+  Booking     Booking?           @relation(fields: [BookingUUID], references: [UUID])
+  Version     String             @db.VarChar(32)
+  ActionID    Int                @db.Int
+  Action      BookingJournalKey? @relation(fields: [ActionID], references: [ID])
+}
+
+// Booking Journal Key table model
+model BookingJournalKey {
+  ID              Int              @id @default(autoincrement())
+  Action          String           @db.VarChar(20)
+  IsValid         Boolean
+  CreatedOn       DateTime         @default(now())
+  UpdatedOn       DateTime?
+  BookingJournels BookingJournal[]
+}
