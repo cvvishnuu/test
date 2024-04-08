@@ -18,6 +18,7 @@ datasource db {
 // Customer table model
 model Customer {
   ID           Int       @id @default(autoincrement())
+  UserID       String?
   Name         String    @db.VarChar(30)
   MobileNumber String    @db.VarChar(10)
   Email        String    @db.VarChar(20)
