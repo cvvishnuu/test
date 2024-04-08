@@ -32,6 +32,18 @@ export class Booking {
   @Field({ nullable: true })
   OrderDispatchedDate?: Date;
 
+  @Field()
+  City: string;
+
+  @Field()
+  State: string;
+
+  @Field()
+  Pincode: string;
+
+  @Field()
+  BookingAddress: string;
+
   @Field(() => Dealer)
   Dealer: Dealer;
 

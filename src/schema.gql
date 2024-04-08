@@ -8,19 +8,11 @@ type Customer {
   Email: String!
 }
 
-type DealerLocation {
-  City: String!
-  State: String!
-  Pincode: String!
-  BookingAddress: String!
-  dealerPinCode: String!
-}
-
 type Dealer {
   DealerCode: Int!
   DealerName: String
   BranchCode: Int!
-  Location: DealerLocation!
+  dealerPinCode: String!
 }
 
 type Vehicle {
@@ -52,6 +44,10 @@ type Booking {
   OrderManufacturedDate: DateTime
   OrderPackedDate: DateTime
   OrderDispatchedDate: DateTime
+  City: String!
+  State: String!
+  Pincode: String!
+  BookingAddress: String!
   Dealer: Dealer!
   Vehicle: Vehicle!
   PaymentDetails: [PaymentDetail!]!
