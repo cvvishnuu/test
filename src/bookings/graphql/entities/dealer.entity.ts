@@ -1,4 +1,4 @@
-import { ObjectType, Field } from '@nestjs/graphql';
+import { ObjectType, Field, Int } from '@nestjs/graphql';
 
 @ObjectType()
 export class DealerLocation {
@@ -20,14 +20,14 @@ export class DealerLocation {
 
 @ObjectType()
 export class Dealer {
-  @Field()
-  DealerCode: string;
+  @Field(() => Int)
+  DealerCode: number;
 
-  @Field()
+  @Field({ nullable: true })
   DealerName: string;
 
-  @Field()
-  BranchCode: string;
+  @Field(() => Int)
+  BranchCode: number;
 
   @Field(() => DealerLocation)
   Location: DealerLocation;

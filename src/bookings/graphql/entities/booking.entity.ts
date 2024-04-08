@@ -2,7 +2,6 @@ import { ObjectType, Field, Int } from '@nestjs/graphql';
 import { Dealer } from './dealer.entity';
 import { Vehicle } from './vehicle.entity';
 import { PaymentDetail } from './payment-detail.entity';
-import { BTODetails } from './bto-details.entity';
 
 @ObjectType()
 export class Booking {
@@ -18,6 +17,21 @@ export class Booking {
   @Field()
   BookingReceivedDate: Date;
 
+  @Field()
+  CurrentStage?: string;
+
+  @Field({ nullable: true })
+  OrderConfirmedDate?: Date;
+
+  @Field({ nullable: true })
+  OrderManufacturedDate?: Date;
+
+  @Field({ nullable: true })
+  OrderPackedDate?: Date;
+
+  @Field({ nullable: true })
+  OrderDispatchedDate?: Date;
+
   @Field(() => Dealer)
   Dealer: Dealer;
 
@@ -26,7 +40,4 @@ export class Booking {
 
   @Field(() => [PaymentDetail])
   PaymentDetails: PaymentDetail[];
-
-  @Field(() => BTODetails)
-  BTODetails: BTODetails;
 }

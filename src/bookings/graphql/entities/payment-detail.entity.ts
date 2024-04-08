@@ -1,4 +1,6 @@
-import { ObjectType, Field, Float } from '@nestjs/graphql';
+import { ObjectType, Field } from '@nestjs/graphql';
+import Decimal from 'decimal.js';
+import { DecimalScalar } from 'src/scalars';
 
 @ObjectType()
 export class PaymentDetail {
@@ -8,8 +10,8 @@ export class PaymentDetail {
   @Field()
   OrderID: string;
 
-  @Field(() => Float)
-  Amount: number;
+  @Field(() => DecimalScalar)
+  Amount: Decimal;
 
   @Field()
   PaymentType: string;

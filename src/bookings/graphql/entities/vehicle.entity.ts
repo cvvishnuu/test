@@ -1,4 +1,6 @@
 import { ObjectType, Field } from '@nestjs/graphql';
+import Decimal from 'decimal.js';
+import { DecimalScalar } from 'src/scalars';
 
 @ObjectType()
 export class Vehicle {
@@ -11,11 +13,11 @@ export class Vehicle {
   @Field()
   Color: string;
 
-  @Field()
-  ExShowRoomPrice: number;
+  @Field(() => DecimalScalar)
+  ExShowRoomPrice: Decimal;
 
-  @Field()
-  onRoadPrice: number;
+  @Field(() => DecimalScalar)
+  onRoadPrice: Decimal;
 
   @Field()
   PartID: string;

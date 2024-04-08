@@ -17,9 +17,9 @@ type DealerLocation {
 }
 
 type Dealer {
-  DealerCode: String!
-  DealerName: String!
-  BranchCode: String!
+  DealerCode: Int!
+  DealerName: String
+  BranchCode: Int!
   Location: DealerLocation!
 }
 
@@ -27,8 +27,8 @@ type Vehicle {
   Name: String!
   Variant: String!
   Color: String!
-  ExShowRoomPrice: Float!
-  onRoadPrice: Float!
+  ExShowRoomPrice: Decimal!
+  onRoadPrice: Decimal!
   PartID: String!
   ModelID: String!
   VehicleType: String!
@@ -37,17 +37,24 @@ type Vehicle {
 type PaymentDetail {
   TransactionID: String!
   OrderID: String!
-  Amount: Float!
+  Amount: Decimal!
   PaymentType: String!
   PaymentStatus: String!
 }
 
-type BTODetails {
+type Booking {
+  UUID: String!
+  BookingNumber: Int!
+  BookingSource: String!
+  BookingReceivedDate: DateTime!
+  CurrentStage: String!
   OrderConfirmedDate: DateTime
   OrderManufacturedDate: DateTime
   OrderPackedDate: DateTime
   OrderDispatchedDate: DateTime
-  CurrentStage: DateTime
+  Dealer: Dealer!
+  Vehicle: Vehicle!
+  PaymentDetails: [PaymentDetail!]!
 }
 
 """
@@ -55,22 +62,14 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-type Booking {
-  UUID: String!
-  BookingNumber: Int!
-  BookingSource: String!
-  BookingReceivedDate: DateTime!
-  Dealer: Dealer!
-  Vehicle: Vehicle!
-  PaymentDetails: [PaymentDetail!]!
-  BTODetails: BTODetails!
-}
-
 type BookingResponse {
   Customer: Customer!
   Bookings: [Booking!]!
 }
 
+"""Decimal custom scalar type"""
+scalar Decimal
+
 type Query {
-  fetchBookings: BookingResponse!
+  fetchBookings(userId: String, customerPhoneNumber: String): BookingResponse!
 }
