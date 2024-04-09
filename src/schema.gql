@@ -1,0 +1,71 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Customer {
+  Name: String!
+  MobileNumber: String!
+  Email: String!
+}
+
+type Dealer {
+  DealerCode: Int!
+  DealerName: String
+  BranchCode: Int!
+  dealerPinCode: String!
+}
+
+type Vehicle {
+  Name: String!
+  Variant: String!
+  Color: String!
+  ExShowRoomPrice: Decimal!
+  onRoadPrice: Decimal!
+  PartID: String!
+  ModelID: String!
+  VehicleType: String!
+}
+
+type PaymentDetail {
+  TransactionID: String!
+  OrderID: String!
+  Amount: Decimal!
+  PaymentType: String!
+  PaymentStatus: String!
+}
+
+type Booking {
+  UUID: String!
+  BookingNumber: Int!
+  BookingSource: String!
+  BookingReceivedDate: DateTime!
+  CurrentStage: String!
+  OrderConfirmedDate: DateTime
+  OrderManufacturedDate: DateTime
+  OrderPackedDate: DateTime
+  OrderDispatchedDate: DateTime
+  City: String!
+  State: String!
+  Pincode: String!
+  BookingAddress: String!
+  Dealer: Dealer!
+  Vehicle: Vehicle!
+  PaymentDetails: [PaymentDetail!]!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type BookingResponse {
+  Customer: Customer!
+  Bookings: [Booking!]!
+}
+
+"""Decimal custom scalar type"""
+scalar Decimal
+
+type Query {
+  fetchBookings(userId: String, customerPhoneNumber: String): BookingResponse!
+}
