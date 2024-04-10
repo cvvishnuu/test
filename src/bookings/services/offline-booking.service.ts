@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import axios, { AxiosResponse } from 'axios';
 import { v4 as uuidv4 } from 'uuid';
-import { PrismaService } from '../prisma/prisma.service';
+import { PrismaService } from '../../prisma/prisma.service';
 import { OfflineBookingRequestDto } from '../dto';
 
 @Injectable()
@@ -59,6 +59,7 @@ export class BookingService {
           Name: bookingInfo.customer.name,
           MobileNumber: bookingInfo.customer.phone,
           Email: bookingInfo.customer.email,
+          
         },
       });
   
