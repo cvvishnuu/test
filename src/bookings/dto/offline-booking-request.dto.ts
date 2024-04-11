@@ -1,42 +1,4 @@
-import { IsBoolean, IsDate, IsNotEmpty,IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
-
-export class OfflineBookingRequestDto {
-  @ValidateNested()
-  @IsNotEmpty()
-  customer?: Customer;
-
-  @ValidateNested()
-  @IsNotEmpty()
-  location?: Location;
-
-  @IsBoolean()
-  @IsOptional()
-  homeDeliverySelected?: boolean=false;
-
-  @ValidateNested()
-  @IsNotEmpty()
-  dealer?: Dealer;
-
-  @ValidateNested()
-  @IsNotEmpty()
-  vehicle?: Vehicle;
-
-  @ValidateNested()
-  @IsNotEmpty()
-  paymentDetails?: PaymentDetails;
-
-  @IsBoolean()
-  @IsOptional()
-  onlineBooking?: boolean=false;
-
-  @IsString()
-  @IsNotEmpty()
-  bookingSource?: string;
-
-  @IsDate()
-  @IsNotEmpty()
-  bookingDate?: Date;
-}
+import { IsBoolean, IsDate, IsDateString, IsNotEmpty,IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
 
 export class Customer {
   @IsString()
@@ -55,6 +17,8 @@ export class Customer {
   @IsNotEmpty()
   email: string;
 }
+
+
 
 export class Location {
   @IsNumber()
@@ -98,7 +62,17 @@ export class Dealer {
   @IsNotEmpty()
   DealerPinCode: string;
 }
+export class Description {
+  @IsString()
+  model: string;
 
+  @IsString()
+  @IsOptional()
+  color: string;
+
+  @IsString()
+  variant: string;
+}
 export class Vehicle {
   @IsString()
   @IsNotEmpty()
@@ -125,17 +99,7 @@ export class Vehicle {
 
 }
 
-export class Description {
-  @IsString()
-  model: string;
 
-  @IsString()
-  @IsOptional()
-  color: string;
-
-  @IsString()
-  variant: string;
-}
 
 export class PaymentDetails {
   @IsString()
@@ -157,4 +121,42 @@ export class PaymentDetails {
   @IsString()
   @IsNotEmpty()
   orderId: string;
+}
+
+export class OfflineBookingRequestDto {
+  @ValidateNested()
+  @IsNotEmpty()
+  customer?: Customer;
+
+  @ValidateNested()
+  @IsNotEmpty()
+  location?: Location;
+
+  @IsBoolean()
+  @IsOptional()
+  homeDeliverySelected?: boolean=false;
+
+  @ValidateNested()
+  @IsNotEmpty()
+  dealer?: Dealer;
+
+  @ValidateNested()
+  @IsNotEmpty()
+  vehicle?: Vehicle;
+
+  @ValidateNested()
+  @IsNotEmpty()
+  paymentDetails?: PaymentDetails;
+
+  @IsBoolean()
+  @IsOptional()
+  onlineBooking?: boolean=false;
+
+  @IsString()
+  @IsNotEmpty()
+  bookingSource?: string;
+
+  @IsDateString()
+  @IsNotEmpty()
+  bookingDate?: Date;
 }

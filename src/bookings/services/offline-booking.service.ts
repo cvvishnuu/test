@@ -30,6 +30,7 @@ export class BookingService {
       }
 
       const UUID = this.generateUUID();
+      console.log(UUID);
       const customerId = await this.createUser(bookingInfo);
       await this.createBookingEntity(bookingInfo, UUID, customerId);
       await this.createVehicle(bookingInfo, UUID);
@@ -42,7 +43,7 @@ export class BookingService {
     }
   }
 
-  private async createUser(bookingInfo: OfflineBookingRequestDto): Promise<number> {
+  public async createUser(bookingInfo: OfflineBookingRequestDto): Promise<number> {
     try {
       const existingUser = await this.prisma.customer.findFirst({
         where: {
@@ -74,19 +75,21 @@ export class BookingService {
       await this.prisma.booking.create({
         data: {
           UUID: UUID,
-          CustomerID: customerId,
-          Location: bookingInfo.location.toString(),
+          Customer: {
+            connect: { ID: customerId } // Assuming `id` is the primary key of the Customer entity
+          },
+          Location: JSON.stringify(bookingInfo.location),
           HomeDeliverySelected: bookingInfo.homeDeliverySelected,
           DealerCode: bookingInfo.dealer.dealerCode,
           BranchCode: bookingInfo.dealer.branchCode,
           DealerPincode: bookingInfo.dealer.DealerPinCode,
           OnlineBooking: false,
           PreBooked: false,
-          MerchandiseAndAccessories: null,
-          BookingStatus: null,
-          BookingNumber: null,
-          FrameNumber: null,
-          OrderNumber: null,
+          MerchandiseAndAccessories: "",
+          BookingStatus: "Recieved",
+          BookingNumber: 787,
+          FrameNumber: "7676",
+          OrderNumber: "88787",
           BookingSource: bookingInfo.bookingSource,
           BookingConfirmedDate: bookingInfo.bookingDate,
         },
@@ -136,7 +139,7 @@ export class BookingService {
   }
 
   
-  private async validateDealerCode(dealerCode: Number): Promise<boolean> {
+  public async validateDealerCode(dealerCode: Number): Promise<boolean> {
     try {
       const response: AxiosResponse<any> = await axios.post(
         this.dealerCodeValidationEndpoint,
@@ -149,7 +152,7 @@ export class BookingService {
     }
   }
 
-  private async validatePartAndModel(partId: string, modelId: string): Promise<boolean> {
+  public async validatePartAndModel(partId: string, modelId: string): Promise<boolean> {
     try {
       const response: AxiosResponse<any> = await axios.post(
         this.partAndModelValidationEndpoint,
@@ -164,6 +167,6 @@ export class BookingService {
 
   private generateUUID(): string {
     const uuid = uuidv4();
-    return uuid.substring(0, 32);
+    return uuid.substring(0, 20);
   }
 }
