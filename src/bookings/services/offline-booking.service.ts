@@ -20,13 +20,16 @@ export class BookingService {
       this.logger.log('Creating booking...');
       
       const isDealerValid = await this.validateDealerCode(bookingInfo.dealer?.dealerCode);
+      if(!isDealerValid){
+        throw new Error('Invalid dealer code');
+      }
       const arePartAndModelValid = await this.validatePartAndModel(
         bookingInfo.vehicle?.partId,
         bookingInfo.vehicle?.modelId,
       );
 
-      if (!isDealerValid || !arePartAndModelValid) {
-        throw new Error('Invalid dealer code, partId, or modelId');
+      if (!arePartAndModelValid) {
+        throw new Error('Invalid partId, or modelId');
       }
 
       const UUID = this.generateUUID();

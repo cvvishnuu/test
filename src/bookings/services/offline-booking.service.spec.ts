@@ -4,7 +4,14 @@ import { PrismaService } from '../../prisma/prisma.service';
 import { OfflineBookingRequestDto } from '../dto';
 import axios from 'axios';
 
-jest.mock('../../prisma/prisma.service');
+jest.mock('../../prisma/prisma.service', () => ({
+    PrismaService: jest.fn().mockImplementation(() => ({
+      customer: {
+        findFirst: jest.fn().mockResolvedValue({ ID: 1 }), 
+        create: jest.fn() 
+      }
+    }))
+  }));
 
 
 
@@ -66,6 +73,7 @@ describe('BookingService', () => {
 
         bookingService = module.get<BookingService>(BookingService);
         prismaService = module.get<PrismaService>(PrismaService);
+
     });
 
 
@@ -119,59 +127,57 @@ describe('BookingService', () => {
     });
 
     describe('createUser', () => {
-        let findFirstMock: jest.Mock;
-        let createMock: jest.Mock;
-      
+        let findFirstMock = jest.fn();
+        let createMock = jest.fn();
+    
         beforeEach(() => {
-          findFirstMock = jest.fn();
-          createMock = jest.fn();
-          prismaService.customer.findFirst = findFirstMock;
-          prismaService.customer.create = createMock;
+            findFirstMock = jest.fn();
+            createMock = jest.fn();
+            jest.spyOn(prismaService.customer, 'findFirst').mockImplementation(findFirstMock);
+            jest.spyOn(prismaService.customer, 'create').mockImplementation(createMock);
         });
-      
-        it('should return existing user ID when user already exists', async () => {
-          const bookingInfo: OfflineBookingRequestDto = {
-            customer: samplePayload.customer
-          };
-          findFirstMock.mockResolvedValue({ ID: 1 }); 
-      
-          await expect(bookingService.createUser(bookingInfo)).resolves.toBe(1);
-          expect(createMock).not.toHaveBeenCalled(); 
+    
+        it('returns existing user ID when the user already exists', async () => {
+            const bookingInfo: OfflineBookingRequestDto = samplePayload;
+            findFirstMock.mockResolvedValue({ ID: 1 });
+    
+            await expect(bookingService.createUser(bookingInfo)).resolves.toBe(1);
+            expect(createMock).not.toHaveBeenCalled();
         });
-      
-        it('should create a new user when user does not exist', async () => {
-          const bookingInfo: OfflineBookingRequestDto = {
-            customer: samplePayload.customer
-          };
-          findFirstMock.mockResolvedValue(null); 
-      
-          await expect(bookingService.createUser(bookingInfo)).resolves.toBe(2); 
-          expect(createMock).toHaveBeenCalled(); 
+    
+        it('creates a new user when the user does not exist', async () => {
+            const bookingInfo: OfflineBookingRequestDto = samplePayload;
+            findFirstMock.mockResolvedValue(null);
+    
+            createMock.mockResolvedValue({ ID: 2 });
+    
+            await expect(bookingService.createUser(bookingInfo)).resolves.toBe(2);
+            expect(createMock).toHaveBeenCalled();
         });
-      
-        it('should throw an error when user creation fails', async () => {
-          const bookingInfo: OfflineBookingRequestDto = {
-            customer: samplePayload.customer,
-          };
-          findFirstMock.mockResolvedValue(null);
-          createMock.mockRejectedValue(new Error('Failed to create user'));
-      
-          await expect(bookingService.createUser(bookingInfo)).rejects.toThrow('Failed to create user');
+    
+        it('throws an error when user creation fails', async () => {
+            const bookingInfo: OfflineBookingRequestDto = samplePayload;
+            findFirstMock.mockResolvedValue(null);
+            const errorMessage = 'Failed to create user';
+            createMock.mockRejectedValue(new Error(errorMessage));
+    
+            await expect(bookingService.createUser(bookingInfo)).rejects.toThrow(errorMessage);
         });
-      });
+    });
+
       
 
     it('should throw an error if dealer code validation fails', async () => {
         const dto: OfflineBookingRequestDto = samplePayload;
         jest.spyOn(bookingService, 'validateDealerCode').mockResolvedValueOnce(false);
-        await expect(bookingService.createBooking(dto)).rejects.toThrow('Invalid dealer code, partId, or modelId');
+        await expect(bookingService.createBooking(dto)).rejects.toThrow('Invalid dealer code');
     });
 
     it('should throw an error if part and model validation fails', async () => {
         const dto: OfflineBookingRequestDto = samplePayload;
         jest.spyOn(bookingService, 'validateDealerCode').mockResolvedValueOnce(true);
         jest.spyOn(bookingService, 'validatePartAndModel').mockResolvedValueOnce(false);
-        await expect(bookingService.createBooking(dto)).rejects.toThrow('Invalid dealer code, partId, or modelId');
+        await expect(bookingService.createBooking(dto)).rejects.toThrow('Invalid partId, or modelId');
     });
 });
 
