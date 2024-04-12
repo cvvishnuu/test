@@ -1,23 +1,24 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
- 
+
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
- 
+
 generator client {
   provider = "prisma-client-js"
 }
- 
+
 datasource db {
   provider = "sqlserver"
   url      = env("DATABASE_URL")
 }
- 
+
 // schema.prisma
- 
+
 // Customer table model
 model Customer {
   ID           Int       @id @default(autoincrement())
+  UserID       String?
   Name         String    @db.VarChar(30)
   MobileNumber String    @db.VarChar(10)
   Email        String    @db.VarChar(20)
@@ -25,11 +26,11 @@ model Customer {
   UpdatedOn    DateTime?
   UpdatedBy    Int?
   Bookings     Booking[]
- 
+
   //Indexes
   @@index([MobileNumber], name: "idx_customer_mobile_number")
 }
- 
+
 // Payment table model
 model Payment {
   ID            Int      @id @default(autoincrement())
@@ -42,11 +43,11 @@ model Payment {
   CreatedOn     DateTime @default(now())
   BookingUUID   String   @db.VarChar(20)
   Booking       Booking  @relation(fields: [BookingUUID], references: [UUID])
- 
+
   //Indexes
   @@index([BookingUUID], name: "idx_payment_booking_id")
 }
- 
+
 // Booking table model
 model Booking {
   UUID                      String           @id @db.VarChar(20)
@@ -71,14 +72,14 @@ model Booking {
   OrderDispatchedDate       DateTime?
   BookingNumber             Int
   Payments                  Payment[]
-  Vehicles                  Vehicle[]
+  Vehicle                   Vehicle?
   BookingJournels           BookingJournal[]
- 
+
   //Indexes
   @@index([CustomerID], name: "idx_booking_customer_id")
   @@index([DealerCode], name: "idx_booking_dealer_code")
 }
- 
+
 // Vehicle table model
 model Vehicle {
   ID              Int       @id @default(autoincrement())
@@ -93,15 +94,15 @@ model Vehicle {
   BTOKit          String?   @db.VarChar(20)
   IsBTO           Boolean
   FavouriteNumber String?   @db.VarChar(5)
-  BookingUUID     String    @db.VarChar(20)
+  BookingUUID     String    @unique @db.VarChar(20)
   Booking         Booking   @relation(fields: [BookingUUID], references: [UUID])
   CreatedOn       DateTime  @default(now())
   UpdatedOn       DateTime?
- 
+
   //Indexes
   @@index([BookingUUID], name: "idx_vehicle_booking_id")
 }
- 
+
 model BookingJournal {
   ID          Int                @id @default(autoincrement())
   Source      String             @db.VarChar(20)
@@ -115,7 +116,7 @@ model BookingJournal {
   ActionID    Int                @db.Int
   Action      BookingJournalKey? @relation(fields: [ActionID], references: [ID])
 }
- 
+
 // Booking Journal Key table model
 model BookingJournalKey {
   ID              Int              @id @default(autoincrement())
