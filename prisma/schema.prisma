@@ -18,10 +18,10 @@ datasource db {
 // Customer table model
 model Customer {
   ID           Int       @id @default(autoincrement())
-  UserID       String?
+  UserID       String?   @unique
   Name         String    @db.VarChar(30)
   MobileNumber String    @db.VarChar(10)
-  Email        String    @db.VarChar(20)
+  Email        String    @db.VarChar(40)
   CreatedOn    DateTime  @default(now())
   UpdatedOn    DateTime?
   UpdatedBy    Int?
@@ -29,6 +29,7 @@ model Customer {
 
   //Indexes
   @@index([MobileNumber], name: "idx_customer_mobile_number")
+  @@index([UserID], name: "idx_customer_user_id")
 }
 
 // Payment table model
@@ -61,16 +62,16 @@ model Booking {
   OnlineBooking             Boolean
   BookingSource             String           @db.VarChar(20)
   PreBooked                 Boolean
-  MerchandiseAndAccessories String           @db.VarChar(MAX)
+  MerchandiseAndAccessories String?          @db.VarChar(MAX)
   BookingStatus             String           @db.VarChar(20)
-  FrameNumber               String           @db.VarChar(20)
-  OrderNumber               String           @db.VarChar(20)
+  FrameNumber               String?          @db.VarChar(20)
+  OrderNumber               String?          @db.VarChar(20)
   CreatedOn                 DateTime         @default(now())
   BookingConfirmedDate      DateTime?
   OrderManufacturedDate     DateTime?
   OrderPackedDate           DateTime?
   OrderDispatchedDate       DateTime?
-  BookingNumber             Int
+  BookingNumber             Int?
   Payments                  Payment[]
   Vehicle                   Vehicle?
   BookingJournels           BookingJournal[]

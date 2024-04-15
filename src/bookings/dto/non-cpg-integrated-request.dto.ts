@@ -1,9 +1,9 @@
-import { IsBoolean, IsDate, IsDateString, IsNotEmpty,IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
+import { IsBoolean, IsDateString, IsNotEmpty,IsNumber, IsOptional, IsString, ValidateNested} from 'class-validator';
 
 export class Customer {
   @IsString()
-  @IsOptional()
-  userId?: string;
+  @IsNotEmpty()
+  userId: string;
 
   @IsString()
   @IsNotEmpty()
@@ -123,7 +123,7 @@ export class PaymentDetails {
   orderId: string;
 }
 
-export class OfflineBookingRequestDto {
+export class NonCpgIntegratedRequestDto {
   @ValidateNested()
   @IsNotEmpty()
   customer?: Customer;

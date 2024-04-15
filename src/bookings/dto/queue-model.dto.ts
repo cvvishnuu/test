@@ -1,6 +1,6 @@
 import { IsBoolean, IsDate, IsNotEmpty,IsNumber, IsOptional, IsString, ValidateNested } from 'class-validator';
 
-export class TopicModelDto {
+export class QueueModelDto {
     @IsString()
     @IsNotEmpty()
     context: string;
