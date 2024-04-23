@@ -21,18 +21,23 @@
   },
   "dependencies": {
     "@apollo/server": "^4.10.2",
+    "@azure/service-bus": "^7.9.4",
     "@nestjs/apollo": "^12.1.0",
+    "@nestjs/axios": "^3.0.2",
     "@nestjs/common": "^10.0.0",
     "@nestjs/core": "^10.0.0",
     "@nestjs/graphql": "^12.1.1",
     "@nestjs/platform-express": "^10.0.0",
+    "axios": "^1.6.8",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "decimal.js": "^10.4.3",
     "graphql": "^16.8.1",
     "graphql-scalars": "^1.23.0",
+    "nest-winston": "^1.9.4",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "winston": "^3.13.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^10.0.0",
