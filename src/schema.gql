@@ -3,6 +3,7 @@
 # ------------------------------------------------------
 
 type Customer {
+  ID: Int!
   Name: String!
   MobileNumber: String!
   Email: String!
@@ -12,7 +13,7 @@ type Dealer {
   DealerCode: Int!
   DealerName: String
   BranchCode: Int!
-  dealerPinCode: String!
+  DealerPinCode: String
 }
 
 type Vehicle {
@@ -20,7 +21,7 @@ type Vehicle {
   Variant: String!
   Color: String!
   ExShowRoomPrice: Decimal!
-  onRoadPrice: Decimal!
+  OnRoadPrice: Decimal!
   PartID: String!
   ModelID: String!
   VehicleType: String!
@@ -67,5 +68,5 @@ type BookingResponse {
 scalar Decimal
 
 type Query {
-  fetchBookings(userId: String, customerPhoneNumber: String): BookingResponse!
+  fetchBookings(userId: String): BookingResponse!
 }

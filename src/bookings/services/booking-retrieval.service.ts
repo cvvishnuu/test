@@ -1,28 +1,41 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { BookingResponse, Customer } from '../graphql/entities';
 import { BookingRetrievalDto } from '../dto';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { PrismaService } from '../../prisma/prisma.service';
 import { BookingLocationModel } from '../../shared/data-models';
 
 @Injectable()
 export class BookingRetrievalService {
   constructor(private prisma: PrismaService) {}
 
-  private async getCustomerInfo(userId: number): Promise<Customer | undefined> {
-    const customerInfo = await this.prisma.customer.findUnique({
-      where: { ID: userId },
+  private async findCustomerById(
+    userId: string,
+  ): Promise<Customer | undefined> {
+    const customer: Customer = await this.prisma.customer.findUnique({
+      where: { UserID: userId },
+      select: {
+        ID: true,
+        Name: true,
+        MobileNumber: true,
+        Email: true,
+      },
     });
 
-    if (!customerInfo) {
+    if (!customer) {
       throw new NotFoundException('Customer not found');
     }
 
+    return customer;
+  }
+
+  async getCustomerInfo(userId: string): Promise<Customer | undefined> {
+    const customerInfo = await this.findCustomerById(userId);
     return customerInfo;
   }
 
-  private async getCustomerBookings(userId: number) {
+  private async getCustomerBookings(customerID: number) {
     return this.prisma.booking.findMany({
-      where: { CustomerID: userId },
+      where: { CustomerID: customerID },
       select: {
         UUID: true,
         BookingNumber: true,
@@ -80,6 +93,7 @@ export class BookingRetrievalService {
   ): BookingResponse {
     return {
       Customer: {
+        ID: customerInfo.ID,
         Name: customerInfo.Name,
         Email: customerInfo.Email,
         MobileNumber: customerInfo.MobileNumber,
@@ -102,17 +116,18 @@ export class BookingRetrievalService {
           DealerCode: booking.DealerCode,
           DealerName: '',
           BranchCode: booking.BranchCode,
-          dealerPinCode: booking.DealerPincode,
+          DealerPinCode: booking.DealerPincode,
         },
         Vehicle: {
           Name: booking.Vehicle.Model,
           Variant: booking.Vehicle.Variant,
           Color: booking.Vehicle.Color,
           ExShowRoomPrice: booking.Vehicle.ExShowRoomPrice,
-          onRoadPrice: booking.Vehicle.OnRoadPrice,
+          OnRoadPrice: booking.Vehicle.OnRoadPrice,
           PartID: booking.Vehicle.PartID,
           ModelID: booking.Vehicle.ModelID,
           VehicleType: booking.Vehicle.VehicleType,
+          IsBTO: booking.Vehicle.IsBTO,
         },
         PaymentDetails: booking.Payments.map((payment) => ({
           TransactionID: payment.TransactionID,
@@ -128,23 +143,17 @@ export class BookingRetrievalService {
   async fetchBookings(query: BookingRetrievalDto): Promise<BookingResponse> {
     const { userId } = query;
 
-    if (userId) {
-      const parsedUserId = parseInt(userId, 10);
+    const customerInfo = await this.getCustomerInfo(userId);
 
-      const customerInfo = await this.getCustomerInfo(parsedUserId);
+    const availableBookings = await this.getCustomerBookings(customerInfo.ID);
 
-      const availableBookings = await this.getCustomerBookings(parsedUserId);
+    const parsedBookings = this.parseBookingData(availableBookings);
 
-      const parsedBookings = this.parseBookingData(availableBookings);
+    const responseDTO: BookingResponse = this.constructResponse(
+      customerInfo,
+      parsedBookings,
+    );
 
-      const responseDTO: BookingResponse = this.constructResponse(
-        customerInfo,
-        parsedBookings,
-      );
-
-      return responseDTO;
-    }
-    // else if (query.customerPhoneNumber) {
-    // }
+    return responseDTO;
   }
 }

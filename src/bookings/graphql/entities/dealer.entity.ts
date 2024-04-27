@@ -11,6 +11,6 @@ export class Dealer {
   @Field(() => Int)
   BranchCode: number;
 
-  @Field()
-  dealerPinCode: string;
+  @Field({ nullable: true })
+  DealerPinCode: string;
 }

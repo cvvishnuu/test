@@ -6,8 +6,4 @@ export class BookingRetrievalDto {
   @IsString()
   @Field({ nullable: true })
   userId?: string;
-
-  @IsString()
-  @Field({ nullable: true })
-  customerPhoneNumber?: string;
 }
