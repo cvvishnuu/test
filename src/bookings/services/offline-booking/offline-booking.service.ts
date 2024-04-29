@@ -34,6 +34,7 @@ export class OfflineBookingService {
     const customerId = await this.offlineBookingRepository.saveCustomer(
       bookingInfo.customer,
     );
+
     await this.offlineBookingRepository.createBookingEntity(
       bookingInfo.dealer,
       bookingInfo.location,

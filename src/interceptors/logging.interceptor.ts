@@ -3,17 +3,14 @@ import {
   NestInterceptor,
   ExecutionContext,
   CallHandler,
-  Logger,
 } from '@nestjs/common';
-import { Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
 import { LoggingService } from '../logger/logging.service';
 import { EXCEPTION_MESSAGE } from '../shared/constants/constants';
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
-  private readonly logger = new Logger('HTTP');
-
   constructor(private readonly loggingService: LoggingService) {}
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
@@ -49,7 +46,7 @@ export class LoggingInterceptor implements NestInterceptor {
           `[${method}] ${url} ${context.getClass().name} ${context.getHandler().name} - ${errorMessage}`,
         );
 
-        return throwError(() => error);
+        throw error;
       }),
     );
   }
