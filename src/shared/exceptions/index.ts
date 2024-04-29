@@ -1,2 +1,1 @@
-export * from "./invalid-dealer-code.exception"
-export * from "./invalid-partId-modelId.exception"
+export * from './custom.exception';

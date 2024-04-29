@@ -1,31 +1,51 @@
-import { Controller , Post, Body, Inject} from '@nestjs/common';
-import { NonCpgIntegratedRequestDto } from '../dto';
-import { NonCpgIntegratedService } from '../services/non-cpg-integrated.service';
-import { Logger } from 'winston';
-import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
-import { InvalidDealerCodeException,InvalidPartOrModelIdException } from "../../shared/exceptions"
+import {
+  Controller,
+  Post,
+  Body,
+  HttpException,
+  InternalServerErrorException,
+} from '@nestjs/common';
+import { OfflineBookingRequestDto } from '../dto';
+import { OfflineBookingService } from '../services';
+import { API_ROUTE, EXCEPTION_MESSAGE } from '../../shared/constants/constants';
+import {
+  DatabaseException,
+  InvalidDealerCodeException,
+  InvalidPartOrModelIdException,
+} from '../../shared/exceptions';
+import {
+  PrismaClientInitializationError,
+  PrismaClientUnknownRequestError,
+} from '@prisma/client/runtime/library';
 
-
-@Controller('bookings')
+@Controller(API_ROUTE.BOOKINGS)
 export class BookingsController {
- constructor(
-     private readonly nonCpgBookingService: NonCpgIntegratedService,
-     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger
- ) {}
+  constructor(private readonly offlineBookingService: OfflineBookingService) {}
 
-    @Post("offline")
-    async createBooking(@Body() bookingInfo: NonCpgIntegratedRequestDto) {
-        try {
-            return await this.nonCpgBookingService.saveBooking(bookingInfo);
-        } catch (error) {
-            if (error instanceof InvalidDealerCodeException) {
-                this.logger.error(`Invalid dealer code: ${error.message}`);
-            } else if (error instanceof InvalidPartOrModelIdException) {
-                this.logger.error(`Invalid partId or modelId: ${error.message}`);
-            } else {
-                this.logger.error(`Unknown error occurred while saving booking: ${error}`);
-            }
-            throw error;
-        }
+  @Post(API_ROUTE.OFFLINE)
+  async createBooking(@Body() bookingInfo: OfflineBookingRequestDto) {
+    try {
+      return await this.offlineBookingService.saveBooking(bookingInfo);
+    } catch (error) {
+      if (
+        error instanceof InvalidDealerCodeException ||
+        error instanceof InvalidPartOrModelIdException ||
+        error instanceof HttpException
+      ) {
+        throw error;
+      } else if (error instanceof PrismaClientInitializationError) {
+        throw new DatabaseException(
+          EXCEPTION_MESSAGE.PRISMA_INITIALIZATION_ERROR,
+        );
+      } else if (error instanceof PrismaClientUnknownRequestError) {
+        throw new DatabaseException(
+          EXCEPTION_MESSAGE.PRISMA_UNKNOWN_REQUEST_ERROR,
+        );
+      } else {
+        throw new InternalServerErrorException(
+          `${EXCEPTION_MESSAGE.CREATE_BOOKING_FAILED}: ${error}`,
+        );
+      }
     }
+  }
 }

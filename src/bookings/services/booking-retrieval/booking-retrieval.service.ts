@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { BookingResponse, Customer } from '../graphql/entities';
-import { BookingRetrievalDto } from '../dto';
-import { PrismaService } from '../../prisma/prisma.service';
-import { BookingLocationModel } from '../../shared/data-models';
+import { BookingResponse, Customer } from '../../graphql/entities';
+import { BookingRetrievalDto } from '../../dto';
+import { PrismaService } from '../../../prisma/prisma.service';
+import { BookingLocationModel } from '../../../shared/data-models';
 
 @Injectable()
 export class BookingRetrievalService {

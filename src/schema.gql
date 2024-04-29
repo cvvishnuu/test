@@ -25,6 +25,7 @@ type Vehicle {
   PartID: String!
   ModelID: String!
   VehicleType: String!
+  IsBTO: Boolean!
 }
 
 type PaymentDetail {

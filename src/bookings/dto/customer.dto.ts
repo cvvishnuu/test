@@ -1,15 +1,19 @@
 import { IsNotEmpty, IsString } from 'class-validator';
 
-export class QueueModelDto {
+export class CustomerDto {
   @IsString()
   @IsNotEmpty()
-  context: string;
+  userId: string;
 
   @IsString()
   @IsNotEmpty()
-  data: string;
+  name: string;
 
   @IsString()
   @IsNotEmpty()
-  brand: string;
+  phone: string;
+
+  @IsString()
+  @IsNotEmpty()
+  email: string;
 }

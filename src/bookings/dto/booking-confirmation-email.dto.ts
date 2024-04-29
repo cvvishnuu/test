@@ -1,4 +1,10 @@
-import { IsDate, IsDecimal, IsEmail, IsNotEmpty, IsNumberString, IsString } from "class-validator";
+import {
+  IsDecimal,
+  IsEmail,
+  IsNotEmpty,
+  IsNumberString,
+  IsString,
+} from 'class-validator';
 
 export class BookingConfirmationEmailDto {
   @IsString()
@@ -40,5 +46,5 @@ export class BookingConfirmationEmailDto {
   uuid: string;
 
   @IsDecimal()
-  totalVehicleValue? : number;
+  totalVehicleValue?: number;
 }
