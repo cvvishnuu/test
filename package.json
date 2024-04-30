@@ -21,6 +21,8 @@
   },
   "dependencies": {
     "@apollo/server": "^4.10.2",
+    "@azure/identity": "^4.1.0",
+    "@azure/keyvault-secrets": "^4.8.0",
     "@azure/service-bus": "^7.9.4",
     "@nestjs/apollo": "^12.1.0",
     "@nestjs/axios": "^3.0.2",
