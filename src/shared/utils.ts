@@ -9,7 +9,7 @@ export const generateUUID = (): string => {
 
 export const validateDealerCode = async (dealerCode: number): Promise<void> => {
   const response = await axios.post(
-    process.env.DEALER_CODE_VALIDATION_ENDPOINT,
+    process.env.DEALER_CODE_VALIDATION_ENDPOINT!,
     {
       dealerCode,
     },
@@ -25,7 +25,7 @@ export const validatePartAndModel = async (
   modelId: string,
 ): Promise<void> => {
   const response = await axios.post(
-    process.env.PART_MODEL_VALIDATION_ENDPOINT,
+    process.env.PART_MODEL_VALIDATION_ENDPOINT!,
     {
       partId,
       modelId,

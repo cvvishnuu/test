@@ -5,8 +5,8 @@ import { DefaultAzureCredential } from '@azure/identity';
 @Injectable()
 export class SecretService {
   private readonly client: SecretClient;
-
-  constructor(private vaultUrl: string) {
+  private readonly vaultUrl = process.env.KEYVAULT_URL!;
+  constructor() {
     this.client = new SecretClient(this.vaultUrl, new DefaultAzureCredential());
   }
 
