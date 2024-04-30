@@ -10,7 +10,7 @@ import {
   BOOKING_STATUS,
   RESPONSE_MESSAGE,
 } from '../../../shared/constants/constants';
-import { QueueModelTransformerService } from '../../../busConductor/services/model-transformer/queue-model-transformer.service';
+import { QueueModelTransformerService } from '../../../cloudConductor/services/model-transformer/queue-model-transformer.service';
 
 @Injectable()
 export class OfflineBookingService {

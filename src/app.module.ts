@@ -8,7 +8,7 @@ import { DecimalScalar } from './scalars';
 import { LoggingModule } from './logger/logging.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LoggingInterceptor } from './interceptors/logging.interceptor';
-import { BusConductorModule } from './busConductor/bus-conductor.module';
+import { CloudConductorModule } from './cloudConductor/cloud-conductor.module';
 
 @Module({
   imports: [
@@ -19,7 +19,7 @@ import { BusConductorModule } from './busConductor/bus-conductor.module';
     BookingsModule,
     PrismaModule,
     LoggingModule,
-    BusConductorModule,
+    CloudConductorModule,
   ],
   providers: [
     DecimalScalar,

@@ -33,3 +33,11 @@ export enum RESPONSE_MESSAGE {
 export enum COMMUNICATION_CONTEXT {
   CONFIRMATION = 'Booking Confirmation',
 }
+
+export enum KEY_VAULT_SECRET {
+  DB_CONNECTION_STRING = 'cbs-sql-connection-string',
+  SERVICE_BUS_ENDPOINT = '', // have to be updated
+  QUEUE_NAME = 'queue', // have to be updated
+  DEALER_VALIDATION_ENDPOINT = '1', // have to be updated
+  PART_ID_MODEL_ID_VALIDATION_ENDPOINT = '2', // have to be updated
+}
