@@ -1,6 +1,6 @@
 import { Args, Query, Resolver } from '@nestjs/graphql';
 import { BookingRetrievalService } from '../../../services';
-import { BookingResponse } from '../../entities/booking-response.entity';
+import { BookingResponse } from '../../graphqlEntities/booking-response.entity';
 import { BookingRetrievalDto } from '../../../dto';
 import { NotFoundException } from '@nestjs/common';
 

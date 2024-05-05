@@ -1,79 +1,30 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { BookingResponse, Customer } from '../../graphql/entities';
+import { BookingResponse, Customer } from '../../graphql/graphqlEntities';
 import { BookingRetrievalDto } from '../../dto';
-import { PrismaService } from '../../../prisma/prisma.service';
 import { BookingLocationModel } from '../../../shared/data-models';
+import { CustomBookingRepository } from '../../customRepository/custom-booking.repository';
+import { EXCEPTION_MESSAGE } from '../../../shared/constants/constants';
+import { Payment } from '../../../entities';
 
 @Injectable()
 export class BookingRetrievalService {
-  constructor(private prisma: PrismaService) {}
-
-  private async findCustomerById(
-    userId: string,
-  ): Promise<Customer | undefined> {
-    const customer: Customer = await this.prisma.customer.findUnique({
-      where: { UserID: userId },
-      select: {
-        ID: true,
-        Name: true,
-        MobileNumber: true,
-        Email: true,
-      },
-    });
-
-    if (!customer) {
-      throw new NotFoundException('Customer not found');
-    }
-
-    return customer;
-  }
+  constructor(private readonly bookingRepository: CustomBookingRepository) {}
 
   async getCustomerInfo(userId: string): Promise<Customer | undefined> {
-    const customerInfo = await this.findCustomerById(userId);
-    return customerInfo;
-  }
+    const customerInfo =
+      await this.bookingRepository.findCustomerByUserId(userId);
 
-  private async getCustomerBookings(customerID: number) {
-    return this.prisma.booking.findMany({
-      where: { CustomerID: customerID },
-      select: {
-        UUID: true,
-        BookingNumber: true,
-        BookingSource: true,
-        CreatedOn: true,
-        DealerCode: true,
-        BranchCode: true,
-        DealerPincode: true,
-        Location: true,
-        BookingStatus: true,
-        BookingConfirmedDate: true,
-        OrderManufacturedDate: true,
-        OrderPackedDate: true,
-        OrderDispatchedDate: true,
-        Vehicle: {
-          select: {
-            Model: true,
-            Variant: true,
-            Color: true,
-            ExShowRoomPrice: true,
-            OnRoadPrice: true,
-            PartID: true,
-            ModelID: true,
-            VehicleType: true,
-            IsBTO: true,
-          },
-        },
-        Payments: {
-          select: {
-            TransactionID: true,
-            OrderID: true,
-            AmountPaid: true,
-            PaymentType: true,
-            PaymentStatus: true,
-          },
-        },
-      },
-    });
+    if (!customerInfo) {
+      throw new NotFoundException(EXCEPTION_MESSAGE.CUSTOMER_NOT_FOUND);
+    }
+
+    delete customerInfo.Bookings;
+    delete customerInfo.CreatedOn;
+    delete customerInfo.UserID;
+    delete customerInfo.UpdatedOn;
+    delete customerInfo.UpdatedBy;
+
+    return customerInfo;
   }
 
   private parseBookingData(bookings) {
@@ -129,7 +80,7 @@ export class BookingRetrievalService {
           VehicleType: booking.Vehicle.VehicleType,
           IsBTO: booking.Vehicle.IsBTO,
         },
-        PaymentDetails: booking.Payments.map((payment) => ({
+        PaymentDetails: booking.Payments.map((payment: Payment) => ({
           TransactionID: payment.TransactionID,
           OrderID: payment.OrderID,
           Amount: payment.AmountPaid,
@@ -145,7 +96,8 @@ export class BookingRetrievalService {
 
     const customerInfo = await this.getCustomerInfo(userId);
 
-    const availableBookings = await this.getCustomerBookings(customerInfo.ID);
+    const availableBookings =
+      await this.bookingRepository.fetchBookingsByCustomerID(customerInfo.ID);
 
     const parsedBookings = this.parseBookingData(availableBookings);
 

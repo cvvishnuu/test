@@ -7,3 +7,4 @@ export * from './dealer.dto';
 export * from './vehicle-description.dto';
 export * from './location.dto';
 export * from './vehicle.dto';
+export * from './booking.dto';

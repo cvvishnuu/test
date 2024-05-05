@@ -259,7 +259,7 @@ describe('NonCpgIntegratedService', () => {
         .fn()
         .mockResolvedValueOnce(undefined);
 
-      const result = await service.saveBooking(samplePayload);
+      const result = await service.processBooking(samplePayload);
 
       expect(result).toBeDefined();
     });
@@ -269,7 +269,7 @@ describe('NonCpgIntegratedService', () => {
         .fn()
         .mockResolvedValueOnce(false);
 
-      await expect(service.saveBooking(samplePayload)).rejects.toThrow(
+      await expect(service.processBooking(samplePayload)).rejects.toThrow(
         BadRequestException,
       );
     });
@@ -281,7 +281,7 @@ describe('NonCpgIntegratedService', () => {
       (service as any).validatePartAndModel = jest
         .fn()
         .mockResolvedValueOnce(false);
-      await expect(service.saveBooking(samplePayload)).rejects.toThrow(
+      await expect(service.processBooking(samplePayload)).rejects.toThrow(
         BadRequestException,
       );
     });

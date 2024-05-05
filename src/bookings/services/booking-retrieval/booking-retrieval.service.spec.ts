@@ -2,7 +2,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { BookingRetrievalService } from './booking-retrieval.service';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { NotFoundException } from '@nestjs/common';
-import { BookingResponse, Customer } from '../../graphql/entities';
+import { BookingResponse, Customer } from '../../graphql/graphqlEntities';
 import Decimal from 'decimal.js';
 
 describe('BookingRetrievalService', () => {

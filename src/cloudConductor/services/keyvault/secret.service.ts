@@ -11,7 +11,11 @@ export class SecretService {
   }
 
   async getSecret(secretName: string): Promise<string> {
-    const secret = await this.client.getSecret(secretName);
-    return secret.value;
+    try {
+      const secret = await this.client.getSecret(secretName);
+      return secret.value;
+    } catch (e) {
+      console.log(e);
+    }
   }
 }

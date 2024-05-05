@@ -10,6 +10,7 @@ export enum EXCEPTION_MESSAGE {
   INVALID_DEALER_CODE = 'Invalid dealer code',
   INVALID_PARTID_MODELID = 'Invalid partId or modelId',
   CREATE_BOOKING_FAILED = 'Failed to create booking',
+  CUSTOMER_NOT_FOUND = 'customer not found',
 }
 
 export enum BOOKING_STATUS {
@@ -34,10 +35,4 @@ export enum COMMUNICATION_CONTEXT {
   CONFIRMATION = 'Booking Confirmation',
 }
 
-export enum KEY_VAULT_SECRET {
-  DB_CONNECTION_STRING = 'cbs-sql-connection-string',
-  SERVICE_BUS_ENDPOINT = '', // have to be updated
-  QUEUE_NAME = 'queue', // have to be updated
-  DEALER_VALIDATION_ENDPOINT = '1', // have to be updated
-  PART_ID_MODEL_ID_VALIDATION_ENDPOINT = '2', // have to be updated
-}
+export const DATABASE_CONFIG = 'booking-db-config';

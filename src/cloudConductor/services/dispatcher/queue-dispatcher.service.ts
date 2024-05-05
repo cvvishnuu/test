@@ -1,16 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { ServiceBusClient } from '@azure/service-bus';
 import { QueueModelDto } from '../../../bookings/dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class QueueDispatcherService {
-  private serviceBusClient: ServiceBusClient;
-  private connectionString: string;
+  private connectionString: string = this.configService.getOrThrow<string>(
+    'SERVICE_BUS_ENDPOINT',
+  );
+  private serviceBusClient: ServiceBusClient = new ServiceBusClient(
+    this.connectionString,
+  );
 
-  constructor() {
-    this.connectionString = process.env.SERVICE_BUS_ENDPOINT;
-    this.serviceBusClient = new ServiceBusClient(this.connectionString);
-  }
+  constructor(private readonly configService: ConfigService) {}
 
   async dispatchConfirmation(dto: QueueModelDto): Promise<void> {
     const queueName = 'email_preprod';
